@@ -1,0 +1,16 @@
+[project]
+name = "network-security-with-ml"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "certifi>=2026.1.4",
+    "dill>=0.4.1",
+    "numpy>=2.4.1",
+    "pandas>=3.0.0",
+    "pymongo>=4.16.0",
+    "python-dotenv>=1.2.1",
+    "pyyaml>=6.0.3",
+    "scikit-learn>=1.8.0",
+]
