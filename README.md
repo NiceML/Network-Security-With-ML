@@ -1,5 +1,5 @@
 # Network-Security-With-ML
-Machine learning system which will be able to predict whether a website is phishing or not.
+A machine learning system which will be able to predict whether a website is phishing or not.
 
 ## Data Source
 The dataset for this project can be obtained from the UCI Machine Learning Repository:
