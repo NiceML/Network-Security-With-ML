@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# ML artifacts and data
+artifacts/
+data/
+logs/
+
 # Distribution / packaging
 .Python
 build/

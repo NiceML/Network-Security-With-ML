@@ -6,8 +6,6 @@ from networksecurity.logging import logging
 from networksecurity.entity.config_entity import DataValidationConfig
 from networksecurity.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact
 from networksecurity.utils.main_utils import write_yaml_file
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
 
 
 class DataValidation:
@@ -69,20 +67,39 @@ class DataValidation:
         try:
             logging.info("Detecting data drift")
             
-            # Create evidently report
-            data_drift_report = Report(metrics=[DataDriftPreset()])
-            data_drift_report.run(reference_data=base_df, current_data=current_df)
+            # Simple drift detection based on statistical measures
+            drift_detected = False
+            drift_report = {"drift_detected": False, "column_drifts": {}}
+            
+            # Compare statistical properties of each column
+            for column in base_df.columns:
+                if column in current_df.columns:
+                    base_mean = base_df[column].mean()
+                    current_mean = current_df[column].mean()
+                    base_std = base_df[column].std()
+                    current_std = current_df[column].std()
+                    
+                    # Check if mean differs by more than 2 standard deviations
+                    mean_diff = abs(base_mean - current_mean)
+                    threshold = 2 * base_std if base_std > 0 else 0.1
+                    
+                    column_drift = mean_diff > threshold
+                    drift_report["column_drifts"][column] = {
+                        "drift_detected": column_drift,
+                        "base_mean": float(base_mean),
+                        "current_mean": float(current_mean),
+                        "mean_diff": float(mean_diff)
+                    }
+                    
+                    if column_drift:
+                        drift_detected = True
+            
+            drift_report["drift_detected"] = drift_detected
             
             # Save the report
             report_path = self.data_validation_config.drift_report_file_path
             os.makedirs(os.path.dirname(report_path), exist_ok=True)
-            
-            # Get the report as dict and save
-            report_dict = data_drift_report.as_dict()
-            write_yaml_file(file_path=report_path, content=report_dict)
-            
-            # Check if drift is detected
-            drift_detected = report_dict['metrics'][0]['result']['dataset_drift']
+            write_yaml_file(file_path=report_path, content=drift_report)
             
             logging.info(f"Data drift detected: {drift_detected}")
             return drift_detected
