@@ -49,7 +49,7 @@ class ModelTrainer:
                 "Random Forest": RandomForestClassifier(verbose=1),
                 "Decision Tree": DecisionTreeClassifier(),
                 "Gradient Boosting": GradientBoostingClassifier(verbose=1),
-                "Logistic Regression": LogisticRegression(verbose=1)
+                "Logistic Regression": LogisticRegression(max_iter=1000)
             }
             
             params = {
@@ -80,7 +80,7 @@ class ModelTrainer:
             y_test = test_arr[:, -1]
             
             # Evaluate all models
-            model_report = evaluate_models(
+            model_report, trained_models = evaluate_models(
                 X_train=X_train,
                 y_train=y_train,
                 X_test=X_test,
@@ -94,7 +94,7 @@ class ModelTrainer:
             best_model_name = list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
             ]
-            best_model = models[best_model_name]
+            best_model = trained_models[best_model_name]
             
             logging.info(f"Best model: {best_model_name} with score: {best_model_score}")
             

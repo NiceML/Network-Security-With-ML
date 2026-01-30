@@ -88,7 +88,7 @@ class DataIngestion:
             'Prefix_Suffix': np.random.choice([-1, 1], n_samples),
             'having_Sub_Domain': np.random.choice([-1, 0, 1], n_samples),
             'SSLfinal_State': np.random.choice([-1, 0, 1], n_samples),
-            'Domain_registeration_length': np.random.choice([-1, 1], n_samples),
+            'Domain_registration_length': np.random.choice([-1, 1], n_samples),
             'Favicon': np.random.choice([-1, 1], n_samples),
             'port': np.random.choice([-1, 1], n_samples),
             'HTTPS_token': np.random.choice([-1, 1], n_samples),
@@ -101,7 +101,7 @@ class DataIngestion:
             'Redirect': np.random.choice([-1, 0], n_samples),
             'on_mouseover': np.random.choice([-1, 1], n_samples),
             'RightClick': np.random.choice([-1, 1], n_samples),
-            'popUpWidnow': np.random.choice([-1, 1], n_samples),
+            'popUpWindow': np.random.choice([-1, 1], n_samples),
             'Iframe': np.random.choice([-1, 1], n_samples),
             'age_of_domain': np.random.choice([-1, 1], n_samples),
             'DNSRecord': np.random.choice([-1, 1], n_samples),
@@ -112,15 +112,17 @@ class DataIngestion:
             'Statistical_report': np.random.choice([-1, 1], n_samples),
         }
         
-        # Create target variable (1 for phishing, -1 for legitimate)
+        # Create target variable (1 for legitimate, -1 for phishing)
         # Use a simple logic based on some features
+        # More negative indicators suggest phishing
         result = []
         for i in range(n_samples):
             score = (data['having_IP_Address'][i] + 
                     data['having_At_Symbol'][i] + 
                     data['double_slash_redirecting'][i] +
                     data['Prefix_Suffix'][i])
-            result.append(-1 if score > 0 else 1)
+            # Higher negative score means more phishing indicators
+            result.append(-1 if score < -1 else 1)
         
         data['Result'] = result
         

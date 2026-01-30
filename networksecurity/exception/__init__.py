@@ -14,10 +14,15 @@ class NetworkSecurityException(Exception):
             error_details: System error details
         """
         self.error_message = error_message
-        _, _, exc_tb = error_details.exc_info()
+        exc_info = error_details.exc_info()
         
-        self.lineno = exc_tb.tb_lineno
-        self.file_name = exc_tb.tb_frame.f_code.co_filename
+        if exc_info and exc_info[2] is not None:
+            exc_tb = exc_info[2]
+            self.lineno = exc_tb.tb_lineno
+            self.file_name = exc_tb.tb_frame.f_code.co_filename
+        else:
+            self.lineno = 0
+            self.file_name = "unknown"
         
     def __str__(self):
         """

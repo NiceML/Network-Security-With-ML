@@ -37,7 +37,7 @@ def get_classification_score(y_true, y_pred) -> ClassificationMetricArtifact:
 
 def evaluate_models(X_train, y_train, X_test, y_test, models, param):
     """
-    Evaluate multiple models and return their scores
+    Evaluate multiple models and return their scores and trained models
     
     Args:
         X_train: Training features
@@ -48,10 +48,11 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param):
         param: Dictionary of hyperparameters for grid search
         
     Returns:
-        Dictionary with model names and their test scores
+        Tuple of (report dict with test scores, dict of trained models)
     """
     try:
         report = {}
+        trained_models = {}
         
         for model_name, model in models.items():
             logging.info(f"Evaluating model: {model_name}")
@@ -63,14 +64,19 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param):
             if para:
                 gs = GridSearchCV(model, para, cv=3, n_jobs=-1, verbose=1)
                 gs.fit(X_train, y_train)
-                model.set_params(**gs.best_params_)
+                # Use the best estimator from grid search
+                trained_model = gs.best_estimator_
+            else:
+                # Train the model without grid search
+                model.fit(X_train, y_train)
+                trained_model = model
             
-            # Train the model
-            model.fit(X_train, y_train)
+            # Store the trained model
+            trained_models[model_name] = trained_model
             
             # Make predictions
-            y_train_pred = model.predict(X_train)
-            y_test_pred = model.predict(X_test)
+            y_train_pred = trained_model.predict(X_train)
+            y_test_pred = trained_model.predict(X_test)
             
             # Calculate scores
             train_score = f1_score(y_train, y_train_pred)
@@ -80,7 +86,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param):
             
             logging.info(f"{model_name} - Train F1 Score: {train_score}, Test F1 Score: {test_score}")
         
-        return report
+        return report, trained_models
         
     except Exception as e:
         raise NetworkSecurityException(e, sys)

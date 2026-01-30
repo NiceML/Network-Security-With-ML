@@ -6,7 +6,7 @@ A machine learning system that predicts whether a website is phishing or legitim
 
 - **Data Pipeline**: Complete ETL pipeline with data ingestion, validation, and transformation
 - **Multiple ML Models**: Trains and compares multiple classification models (Random Forest, Decision Tree, Gradient Boosting, Logistic Regression)
-- **Data Drift Detection**: Monitors data drift using Evidently AI
+- **Data Drift Detection**: Monitors data drift using statistical analysis
 - **Modular Architecture**: Clean, modular code structure with proper logging and exception handling
 - **Easy to Use**: Simple scripts for training and prediction
 
@@ -106,7 +106,7 @@ The system uses 30 features to detect phishing websites:
 6. `Prefix_Suffix` - Prefix or suffix in domain
 7. `having_Sub_Domain` - Number of sub-domains
 8. `SSLfinal_State` - SSL certificate state
-9. `Domain_registeration_length` - Domain registration length
+9. `Domain_registration_length` - Domain registration length
 10. `Favicon` - Favicon loaded from different domain
 ... and 20 more features
 
