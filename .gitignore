@@ -8,7 +8,7 @@ __pycache__/
 
 # ML artifacts and data
 artifacts/
-data/
+
 logs/
 
 # Distribution / packaging
